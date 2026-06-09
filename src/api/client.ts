@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LoginResponse, Product, Category, Submission, Match, ProductImage } from '../types';
+import type { LoginResponse, Product, Category, Submission } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 

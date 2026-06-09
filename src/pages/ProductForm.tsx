@@ -28,11 +28,14 @@ export const ProductForm = () => {
     const fetchCategories = async () => {
       try {
         const response = await getCategories();
+        // getCategories returns Category[] directly (no pagination)
         let categoriesData: Category[] = [];
-        if (response.data && Array.isArray(response.data.results)) {
-          categoriesData = response.data.results;
-        } else if (Array.isArray(response.data)) {
+        if (Array.isArray(response.data)) {
           categoriesData = response.data;
+        } else if (response.data && Array.isArray(response.data.results)) {
+          categoriesData = response.data.results;
+        } else {
+          categoriesData = [];
         }
         setCategories(categoriesData);
         
@@ -91,11 +94,14 @@ export const ProductForm = () => {
     try {
       let productId: number;
       
-      // Prepare data for API - ensure price is a number
+      // Prepare data for API - keep price as string (Django expects string or number)
       const productData = {
-        ...form,
-        price: parseFloat(form.price) || 0,
-        stock_quantity: Number(form.stock_quantity) || 0,
+        sku: form.sku,
+        name: form.name,
+        description: form.description,
+        category_id: form.category_id,
+        price: form.price, // keep as string
+        stock_quantity: Number(form.stock_quantity),
       };
       
       if (id) {
