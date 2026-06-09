@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { LoginResponse, Product, Category, Submission } from '../types';
+import type { LoginResponse, Product, Category, Submission, ProductImage } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -8,7 +8,7 @@ export const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor
+// Request interceptor to add token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   if (token) {
@@ -17,7 +17,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor (same as before)
+// Response interceptor for token refresh
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -47,7 +47,7 @@ api.interceptors.response.use(
 export const login = (username: string, password: string) =>
   api.post<LoginResponse>('/api/auth/login/', { username, password });
 
-// Products
+// Products (handles pagination)
 export const getProducts = async (): Promise<Product[]> => {
   const response = await api.get('/api/products/');
   if (response.data && Array.isArray(response.data.results)) {
@@ -81,8 +81,16 @@ export const deleteProductImage = (productId: number, imageId: number) =>
   api.delete(`/api/products/${productId}/delete-image/${imageId}/`);
 
 // Categories
-export const getCategories = () => api.get<Category[]>('/api/products/categories/');
-
+export const getCategories = async (): Promise<Category[]> => {
+  const response = await api.get('/api/products/categories/');
+  if (response.data && Array.isArray(response.data.results)) {
+    return response.data.results;
+  }
+  if (Array.isArray(response.data)) {
+    return response.data;
+  }
+  return [];
+};
 
 // Vision / Submissions
 export const getSubmissions = async (): Promise<Submission[]> => {
@@ -100,7 +108,6 @@ export const matchImage = (imageUrl: string, customerPhone?: string) =>
   api.post<{ submission_id: number; message: string }>('/api/vision/submissions/match/', {
     image_url: imageUrl,
     customer_phone: customerPhone || 'test_user',
-
   });
 
 export const getSubmissionDetail = (id: number) => api.get<Submission>(`/api/vision/submissions/${id}/`);

@@ -27,21 +27,11 @@ export const ProductForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories();
-        // getCategories returns Category[] directly (no pagination)
-        let categoriesData: Category[] = [];
-        if (Array.isArray(response.data)) {
-          categoriesData = response.data;
-        } else if (response.data && Array.isArray(response.data.results)) {
-          categoriesData = response.data.results;
-        } else {
-          categoriesData = [];
-        }
-        setCategories(categoriesData);
-        
+        const cats = await getCategories();
+        setCategories(cats);
         // If categories exist and form category_id is still default 1, set to first category
-        if (categoriesData.length > 0 && form.category_id === 1) {
-          setForm(prev => ({ ...prev, category_id: categoriesData[0].id }));
+        if (cats.length > 0 && form.category_id === 1) {
+          setForm(prev => ({ ...prev, category_id: cats[0].id }));
         }
       } catch (err) {
         console.error('Failed to fetch categories', err);
@@ -94,13 +84,12 @@ export const ProductForm = () => {
     try {
       let productId: number;
       
-      // Prepare data for API - keep price as string (Django expects string or number)
       const productData = {
         sku: form.sku,
         name: form.name,
         description: form.description,
         category_id: form.category_id,
-        price: form.price, // keep as string
+        price: form.price,
         stock_quantity: Number(form.stock_quantity),
       };
       
@@ -112,7 +101,6 @@ export const ProductForm = () => {
         productId = res.data.id;
       }
       
-      // Upload image if selected
       if (imageFile) {
         await uploadProductImage(productId, imageFile, isPrimary);
       }

@@ -13,19 +13,20 @@ export interface Product {
   primary_image_url?: string;
 }
 
-
 export interface ProductImage {
   id: number;
   image_url: string;
   image_path: string | null;
   is_primary: boolean;
   angle: string | null;
+  created_at: string;
 }
 
 export interface Category {
   id: number;
   name: string;
   parent_id: number | null;
+  created_at: string;
 }
 
 export interface Submission {
@@ -50,4 +51,3 @@ export interface LoginResponse {
   access: string;
   refresh: string;
 }
-
