@@ -246,7 +246,7 @@ export const TestMatch = () => {
                           {match.product.stock_quantity}
                         </span>
                       </p>
-                      <p className="text-sm">💰 Price: ${match.product.price}</p>
+                      <p className="text-sm">💰 Price: KES {match.product.price}</p>
                     </div>
                   </div>
                   <div className="text-right">

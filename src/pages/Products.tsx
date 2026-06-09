@@ -69,7 +69,7 @@ export const Products = () => {
                 <tr key={p.id}>
                   <td className="px-6 py-4 text-sm font-mono">{p.sku}</td>
                   <td className="px-6 py-4 text-sm">{p.name}</td>
-                  <td className="px-6 py-4 text-sm">${p.price}</td>
+                  <td className="px-6 py-4 text-sm">KES {p.price}</td>
                   <td className="px-6 py-4 text-sm">{p.stock_quantity}</td>
                   <td className="px-6 py-4 text-sm">
                     {p.primary_image_url && (
